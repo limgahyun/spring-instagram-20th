@@ -1,10 +1,14 @@
 package com.ceos20.spring_boot.domain;
 
 import jakarta.persistence.*;
-import java.sql.Timestamp;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-public class Post {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
