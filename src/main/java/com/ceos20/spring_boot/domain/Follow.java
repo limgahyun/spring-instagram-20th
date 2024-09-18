@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 public class Follow {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "follow_id")
     private int id;
 
