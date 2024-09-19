@@ -1,9 +1,7 @@
 package com.ceos20.spring_boot.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,4 +18,10 @@ public class Post extends BaseEntity {
 
     @Column(nullable = true, length = 255)
     private String content;
+
+    @Builder
+    public Post(User user, String content) {
+        this.user = user;
+        this.content = content;
+    }
 }
