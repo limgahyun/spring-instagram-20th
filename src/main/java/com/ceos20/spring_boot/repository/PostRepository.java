@@ -1,9 +1,6 @@
 package com.ceos20.spring_boot.repository;
 
-import com.ceos20.spring_boot.domain.Follow;
 import com.ceos20.spring_boot.domain.Post;
-import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.util.List;
+import java.util.Optional;
 
 @DataJpaTest
 @EnableJpaAuditing
@@ -59,5 +60,12 @@ public class PostRepositoryTest {
         //then
         List<Post> allPosts = postRepository.findAll();
         Assertions.assertEquals(2, allPosts.size());
+    }
+
+    @Test
+    public void findById() {
+        //then
+        Optional<Post> post = postRepository.findById(post1.getId());
+        Assertions.assertEquals(post1.getUser(), post.get().getUser());
     }
 }
