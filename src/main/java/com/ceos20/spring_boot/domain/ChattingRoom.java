@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class ChattingRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "rood_id")
+    @Column(name = "chatting_rood_id")
     private Long id;
 
     @ManyToOne (fetch = FetchType.LAZY)
