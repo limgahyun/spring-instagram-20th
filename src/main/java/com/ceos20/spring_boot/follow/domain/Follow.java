@@ -1,5 +1,6 @@
-package com.ceos20.spring_boot.domain;
+package com.ceos20.spring_boot.follow.domain;
 
+import com.ceos20.spring_boot.user.domain.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -14,24 +15,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Post extends BaseEntity {
+@NoArgsConstructor (access = AccessLevel.PROTECTED)
+public class Follow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "follow_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = true, length = 255)
-    private String content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "following_user_id")
+    private User followingUser;
 
     @Builder
-    public Post(User user, String content) {
+    public Follow(User user, User followingUser) {
         this.user = user;
-        this.content = content;
+        this.followingUser = followingUser;
     }
 }

@@ -1,5 +1,6 @@
-package com.ceos20.spring_boot.domain;
+package com.ceos20.spring_boot.chatting.domain;
 
+import com.ceos20.spring_boot.user.domain.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -9,30 +10,30 @@ import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.FetchType;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class PostComment extends BaseEntity {
+@NoArgsConstructor (access = AccessLevel.PROTECTED)
+public class ChattingRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_comment_id")
+    @Column(name = "chatting_rood_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private PostComment parent;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name = "other_user_id")
+    private User otherUser;
 
-    @Column(nullable = false, length = 255)
-    private String content;
+    @Builder
+    public ChattingRoom(User user, User otherUser) {
+        this.user = user;
+        this.otherUser = otherUser;
+    }
 }

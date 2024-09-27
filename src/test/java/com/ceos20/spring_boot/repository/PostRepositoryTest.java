@@ -1,7 +1,9 @@
 package com.ceos20.spring_boot.repository;
 
-import com.ceos20.spring_boot.domain.Post;
-import com.ceos20.spring_boot.domain.User;
+import com.ceos20.spring_boot.post.domain.Post;
+import com.ceos20.spring_boot.post.repository.PostRepository;
+import com.ceos20.spring_boot.user.domain.User;
+import com.ceos20.spring_boot.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

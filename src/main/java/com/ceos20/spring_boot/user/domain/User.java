@@ -1,4 +1,4 @@
-package com.ceos20.spring_boot.domain;
+package com.ceos20.spring_boot.user.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

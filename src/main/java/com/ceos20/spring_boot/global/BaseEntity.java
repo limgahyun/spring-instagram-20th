@@ -1,4 +1,4 @@
-package com.ceos20.spring_boot.domain;
+package com.ceos20.spring_boot.global;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

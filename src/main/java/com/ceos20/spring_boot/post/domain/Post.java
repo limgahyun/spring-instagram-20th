@@ -1,5 +1,7 @@
-package com.ceos20.spring_boot.domain;
+package com.ceos20.spring_boot.post.domain;
 
+import com.ceos20.spring_boot.global.BaseEntity;
+import com.ceos20.spring_boot.user.domain.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -14,25 +16,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@NoArgsConstructor (access = AccessLevel.PROTECTED)
-public class ChattingRoom {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chatting_rood_id")
+    @Column(name = "post_id")
     private Long id;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name = "other_user_id")
-    private User otherUser;
+    @Column(nullable = true, length = 255)
+    private String content;
 
     @Builder
-    public ChattingRoom(User user, User otherUser) {
+    public Post(User user, String content) {
         this.user = user;
-        this.otherUser = otherUser;
+        this.content = content;
     }
 }

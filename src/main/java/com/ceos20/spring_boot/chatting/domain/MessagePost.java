@@ -1,5 +1,6 @@
-package com.ceos20.spring_boot.domain;
+package com.ceos20.spring_boot.chatting.domain;
 
+import com.ceos20.spring_boot.post.domain.Post;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;

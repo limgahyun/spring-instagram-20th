@@ -1,5 +1,7 @@
-package com.ceos20.spring_boot.domain;
+package com.ceos20.spring_boot.post.domain;
 
+import com.ceos20.spring_boot.global.BaseEntity;
+import com.ceos20.spring_boot.user.domain.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -13,26 +15,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@NoArgsConstructor (access = AccessLevel.PROTECTED)
-public class PostImage {
+public class PostComment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_comment_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(nullable = false)
-    private String url;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(nullable = false)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private PostComment parent;
 
-    @Column(nullable = false)
-    private String alt;
-
-    @Column(nullable = false)
-    private String type;
+    @Column(nullable = false, length = 255)
+    private String content;
 }
