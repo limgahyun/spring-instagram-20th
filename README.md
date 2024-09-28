@@ -46,3 +46,66 @@ CEOS 20th BE study - instagram clone coding
 메세지 조회 기능을 사용할 일이 없다고 예상되어 조인 전략을 선택하였으나 데이터를 저장하는 데에도 성능이 저하될 가능성이 있을지 우려된다. `JOINED`, `SINGLE_TABLE` 둘 중 어느 것이 더 적절할지 고민할 필요가 있다.
 
 `ChattingRoom` : 채팅을 하던 상대방이 인스타그램을 탈퇴하더라도 채팅 기록은 남아있도록 하기 위하여 `ChattingRoom`을 분리하여 구현하였다.
+
+---
+## JPA 심화
+### 주요 기능
+- 회원 가입
+- 회원정보 변경
+- 로그인
+- 회원 탈퇴
+- 팔로우
+- 게시글 작성
+- 게시글 좋아요 등록
+- 게시글 댓글 등록
+- 게시글, 댓글 수정
+- 게시글 삭제
+- DM 전송
+
+### UserService
+회원가입을 할 때, `nickname`과, `email` 중복을 방지하기 위해 `checkNicknameDuplication`, `checkEmailDuplication`을 사용하였습니다.
+```java
+@Transactional(readOnly = true)
+public void checkNicknameDuplication(String nickname) {
+    boolean nicknameDuplicate = userRepository.existsByNickname(nickname);
+    if (nicknameDuplicate) {
+        throw new IllegalStateException("Nickname already exists");
+    }
+}
+```
+```java
+@Transactional
+public void joinUser(UserJoinRequestDto userDto) {
+    checkEmailDuplication(userDto.email());
+    checkNicknameDuplication(userDto.nickname());
+
+    User user = userDto.toEntity();
+    userRepository.save(user);
+}
+```
+### UserServiceTest
+`nickname`에 대한 중복제한이 잘 구현이 되었는지 테스트하기 위하여 `nickname`이 중복인 경우와 아닌 경우를 구분하여 테스트를 진행하였습니다.
+```java
+// nickname이 중복인 경우 회원가입 테스트
+@Test
+void joinSameUserTest() {
+    //given
+    final UserJoinRequestDto request = new UserJoinRequestDto("test", "nickname", "1234", "test@test.com", "01012345678");
+    when(userRepository.existsByNickname(request.nickname())).thenReturn(true); // exsitsByNickname = true 반환
+    when(userRepository.existsByEmail(request.email())).thenReturn(false);
+
+    //when
+    IllegalStateException exception = assertThrows(
+        IllegalStateException.class,
+        () -> userService.joinUser(request)
+    );
+
+    //then
+    System.out.println("Test Result: " + exception.getMessage());
+
+    assertEquals("Nickname already exists", exception.getMessage());
+    verify(userRepository).existsByNickname(request.nickname());
+    verify(userRepository, never()).save(any(User.class));
+}
+```
+

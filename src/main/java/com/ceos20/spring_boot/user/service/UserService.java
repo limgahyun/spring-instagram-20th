@@ -28,7 +28,7 @@ public class UserService {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public void joinUser(UserJoinRequestDto userDto) {
         checkEmailDuplication(userDto.email());
         checkNicknameDuplication(userDto.nickname());
