@@ -12,6 +12,5 @@ public record UserJoinRequestDto(String name, String nickname, String password, 
                 .email(email)
                 .phone(phone)
                 .build();
-
     }
 }

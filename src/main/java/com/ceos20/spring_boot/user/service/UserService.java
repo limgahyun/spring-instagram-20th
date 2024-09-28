@@ -13,23 +13,27 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public void checkNicknameDuplication(UserJoinRequestDto userDto) {
-        boolean nicknameDuplicate = userRepository.existsByNickname(userDto.nickname());
+    public void checkNicknameDuplication(String nickname) {
+        boolean nicknameDuplicate = userRepository.existsByNickname(nickname);
         if (nicknameDuplicate) {
             throw new IllegalStateException("Nickname already exists");
         }
     }
 
     @Transactional(readOnly = true)
-    public void checkEmailDuplication(UserJoinRequestDto userDto) {
-        boolean nicknameDuplicate = userRepository.existsByEmail(userDto.email());
+    public void checkEmailDuplication(String email) {
+        boolean nicknameDuplicate = userRepository.existsByEmail(email);
         if (nicknameDuplicate) {
             throw new IllegalStateException("Account already exists with this email");
         }
     }
 
     @Transactional(readOnly = true)
-    public void joinUser(User user) {
+    public void joinUser(UserJoinRequestDto userDto) {
+        checkEmailDuplication(userDto.email());
+        checkNicknameDuplication(userDto.nickname());
+
+        User user = userDto.toEntity();
         userRepository.save(user);
     }
 
