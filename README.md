@@ -108,4 +108,14 @@ void joinSameUserTest() {
     verify(userRepository, never()).save(any(User.class));
 }
 ```
+### N+1 문제
+`jpql` + `@EntityGraph` 혼합 방법을 사용하여 N+1문제를 해결하였습니다.
+```java
+@Test
+@EntityGraph(attributePaths = {"user"})
+@Query("select p from Post p")
+public void findAllEntityGraph () {
+    ...
+}
+```
 
