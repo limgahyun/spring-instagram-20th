@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.util.List;
@@ -57,13 +59,17 @@ public class PostRepositoryTest {
     }
 
     @Test
-    public void findAll() {
+    @EntityGraph(attributePaths = {"user"})
+    @Query("select p from Post p")
+    public void findAllEntityGraph () {
         //then
         List<Post> allPosts = postRepository.findAll();
         Assertions.assertEquals(2, allPosts.size());
     }
 
     @Test
+    @EntityGraph(attributePaths = {"user"})
+    @Query("select p from Post p")
     public void findById() {
         //then
         Optional<Post> post = postRepository.findById(post1.getId());
