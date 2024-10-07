@@ -36,7 +36,6 @@ public class User {
 
     @Builder
     public User(Long id, String nickname, String name, String email, String password, String phone) {
-        this.id = id;
         this.nickname = nickname;
         this.name = name;
         this.email = email;

@@ -65,7 +65,6 @@ public class UserServiceTest {
 
         // given
         final User user = User.builder()
-                .id(1L)
                 .name("name")
                 .nickname("nickname")
                 .password("1234")
