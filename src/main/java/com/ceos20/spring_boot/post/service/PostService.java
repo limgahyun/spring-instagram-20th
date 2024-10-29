@@ -4,6 +4,7 @@ import com.ceos20.spring_boot.comment.domain.PostComment;
 import com.ceos20.spring_boot.comment.repository.CommentRepository;
 import com.ceos20.spring_boot.post.domain.Post;
 import com.ceos20.spring_boot.post.dto.request.PostCreatRequestDto;
+import com.ceos20.spring_boot.post.dto.response.PostListResponseDto;
 import com.ceos20.spring_boot.post.dto.response.PostResponseDto;
 import com.ceos20.spring_boot.post.repository.PostRepository;
 import com.ceos20.spring_boot.user.domain.User;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,13 @@ public class PostService {
         final List<PostComment> commentList = commentRepository.findByPost(post);
 
         return PostResponseDto.of(post, commentList);
+    }
+
+    public List<PostListResponseDto> getAllPosts() {
+        final List<Post> postList = postRepository.findAll();
+        return postList.stream()
+                .map(PostListResponseDto::from)
+                .collect(Collectors.toList());
     }
 
 }
