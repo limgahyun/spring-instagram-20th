@@ -36,4 +36,8 @@ public class Post extends BaseEntity {
         this.user = user;
         this.content = content;
     }
+
+    public String getWriterNickname() {
+        return user.getNickname();
+    }
 }

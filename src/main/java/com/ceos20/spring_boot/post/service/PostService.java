@@ -1,22 +1,45 @@
 package com.ceos20.spring_boot.post.service;
 
+import com.ceos20.spring_boot.comment.domain.PostComment;
+import com.ceos20.spring_boot.comment.repository.CommentRepository;
 import com.ceos20.spring_boot.post.domain.Post;
 import com.ceos20.spring_boot.post.dto.request.PostCreatRequestDto;
+import com.ceos20.spring_boot.post.dto.response.PostResponseDto;
 import com.ceos20.spring_boot.post.repository.PostRepository;
+import com.ceos20.spring_boot.user.domain.User;
+import com.ceos20.spring_boot.user.repository.UserRepository;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.Optional;
 
 @Service
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Transactional (readOnly = true)
 public class PostService {
-    private PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
-    public void createPost (PostCreatRequestDto postCreatRequestDto) {
-        Post post = postCreatRequestDto.toEntity();
+    public void createPost (final PostCreatRequestDto request, final String username) {
+        final User writer = userRepository.findByNickname(username);
+
+        final Post post = Post.builder()
+                .user(writer)
+                .content(request.content())
+                .build();
         postRepository.save(post);
+    }
+
+    public PostResponseDto getPost(final Long postId) {
+        final Post post = postRepository.findById(postId)
+                .orElse(null);
+        final List<PostComment> commentList = commentRepository.findByPost(post);
+
+        return PostResponseDto.of(post, commentList);
     }
 
 }

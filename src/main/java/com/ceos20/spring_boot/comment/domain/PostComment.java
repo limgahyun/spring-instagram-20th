@@ -1,6 +1,7 @@
-package com.ceos20.spring_boot.post.domain;
+package com.ceos20.spring_boot.comment.domain;
 
 import com.ceos20.spring_boot.global.BaseEntity;
+import com.ceos20.spring_boot.post.domain.Post;
 import com.ceos20.spring_boot.user.domain.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -33,7 +34,7 @@ public class PostComment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    private PostComment parent;
+    private com.ceos20.spring_boot.comment.domain.PostComment parent;
 
     @Column(nullable = false, length = 255)
     private String content;
