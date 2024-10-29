@@ -32,8 +32,8 @@ public class UserService {
         checkEmailDuplication(userDto.email());
         checkNicknameDuplication(userDto.nickname());
 
-        User user = userDto.toEntity();
-        userRepository.save(user);
+        User user = userDto.toEntity(); //만들어진 객체를 user 엔티티로 변환
+        userRepository.save(user); //user 엔티티 저장
     }
 
     @Transactional
