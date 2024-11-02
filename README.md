@@ -119,6 +119,29 @@ public void findAllEntityGraph () {
 }
 ```
 
+## CRUD API
+```java
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/posts")
+public class PostController {
+    private final PostService postService;
+    
+    @PostMapping
+    public ResponseEntity<Void> createPost(@RequestBody final PostCreatRequestDto requestDto, final String username) {
+        postService.createPost(requestDto, username);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PostListResponseDto>> getAllPosts() {
+        final List<PostListResponseDto> posts = postService.getAllPosts();
+        return ResponseEntity.ok().body(posts);
+    }
+}
+```
+
+
 ## Global Exception
 1. `exception code`, `success code` 정의
     ```java
