@@ -2,6 +2,8 @@ package com.ceos20.spring_boot.post.service;
 
 import com.ceos20.spring_boot.comment.domain.PostComment;
 import com.ceos20.spring_boot.comment.repository.CommentRepository;
+import com.ceos20.spring_boot.config.exception.ExceptionCode;
+import com.ceos20.spring_boot.config.exception.ExceptionResponse;
 import com.ceos20.spring_boot.post.domain.Post;
 import com.ceos20.spring_boot.post.dto.request.PostCreatRequestDto;
 import com.ceos20.spring_boot.post.dto.response.PostListResponseDto;
@@ -13,6 +15,8 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,7 +42,7 @@ public class PostService {
 
     public PostResponseDto getPost(final Long postId) {
         final Post post = postRepository.findById(postId)
-                .orElse(null);
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.NOT_FOUND_POST.getMessage()));
         final List<PostComment> commentList = commentRepository.findByPost(post);
 
         return PostResponseDto.of(post, commentList);

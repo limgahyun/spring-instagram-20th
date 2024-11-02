@@ -1,4 +1,4 @@
-package com.ceos20.spring_boot.exception;
+package com.ceos20.spring_boot.config.exception;
 
 import org.springframework.http.HttpStatus;
 
