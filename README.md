@@ -119,6 +119,29 @@ public void findAllEntityGraph () {
 }
 ```
 
+## Global Exception
+1. `exception code`, `success code` 정의
+    ```java
+    BAD_REQUEST_ERROR(HttpStatus.BAD_REQUEST, "Bad Request Exception"),
+    NOT_FOUND_POST(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다"),
+    ```
+    ```java
+    SELECT_SUCCESS(200, "200", "SELECT SUCCESS"),
+    DELETE_SUCCESS(200, "200", "DELETE SUCCESS"),
+    INSERT_SUCCESS(201, "201", "INSERT SUCCESS"),
+    UPDATE_SUCCESS(204, "204", "UPDATE SUCCESS");
+    ```
+2. service 예외 처리
+    ```java
+    public PostResponseDto getPost(final Long postId) {
+        final Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.NOT_FOUND_POST.getMessage()));
+        final List<PostComment> commentList = commentRepository.findByPost(post);
+    
+        return PostResponseDto.of(post, commentList);
+    }
+    ```
+   게시글을 조회했을 때 해당 게시글이 존재하지 않을 때 `NotFoundException`을 통해 설정해둔 `NOT_FOUND_POST`에 대한 exception message를 표시한다.
 ## API 명세서
 
 ### 개발 전 명세서 ?
@@ -127,9 +150,7 @@ DTO를 생성할 때에도, CRUD api 를 생성하려고 할 때에도, 기능�
 
 다음과 같은 형식으로 기능, http method, api path, token, 각 기능에 필요한 DTO를 정리하려고 하였다.
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d72754a5-6647-40b9-9edf-7922b38fc3aa/83c65a70-5804-4f70-a39b-c9fbc2d6a828/image.png)
-
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d72754a5-6647-40b9-9edf-7922b38fc3aa/ea50dadc-eebb-4fd0-a453-84e770dc351d/image.png)
+![image](https://github.com/user-attachments/assets/df0c130d-f8cf-48fd-8aa6-511e287f6bb8)
 
 ### 협업 때 사용할 명세서
 
@@ -138,5 +159,39 @@ DTO를 생성할 때에도, CRUD api 를 생성하려고 할 때에도, 기능�
 코드 기반으로 api 명세서를 생성하는 swagger, spring REST docs 에 대해 찾아보았다
 
 1. swagger
-
+- 장점 : swagger-ui 문서에서 api test 가능
+- 단점 : 코드에 어노테이션을 추가해야 하므로 서비스코드와 api 명세서 관리가 혼합된다
 2. spring REST docs
+- 장점 : 코드에 영향 X
+- 단점 : 테스트 코드를 기반으로 생성되므로 모든 테스트 코드를 작성해야한다
+
+프론트 개발을 할 때 swagger-ui를 사용해보았는데 ui가 그리 보기 편하진 않았어서.. REST docs를 사용하고 싶었지만..! 테스트를 만들어서 실행하는게 익숙하지 않기 때문에 처음에는 swagger를 시도해보기로 결정하였다.
+
+### swagger-ui
+```java
+@Configuration
+@OpenAPIDefinition(
+        info = @Info(
+                title = "API Test",
+                description = "Instagram clone coding API 명세서",
+                version = "v1"
+        ),
+        servers = {@Server(url = "http://localhost:8080", description = "local server")}
+)
+public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .components(new Components());
+    }
+}
+```
+SwaggerConfig 파일에서 로컬 서버로 url 설정을 해둔 후, `@Tag`, `@Operation` 등의 어노테이션을 사용하여 각 api 동작이 swagger-ui와 연동되도록 한다.
+
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/d3a57457-8df8-4f1b-bf38-f4c6c0a2d824">
+
+## Controller 통합 테스트
+에러 발생 시 설정해둔 exception status, message가 표시되는 것을 확인하였다.
+
+<img width="1427" alt="image" src="https://github.com/user-attachments/assets/18d6c70d-f3f1-4ce1-94b2-e2c6cff061ad">
