@@ -119,3 +119,24 @@ public void findAllEntityGraph () {
 }
 ```
 
+## API 명세서
+
+### 개발 전 명세서 ?
+
+DTO를 생성할 때에도, CRUD api 를 생성하려고 할 때에도, 기능들에 대한 정리가 안되어있다보니 어디부터 손대할지 막막하고 개발 도주에 수정할 것들이 많아져서 뒤죽박죽이 되는 느낌이었다. 이를 해소하고자 API 명세서를 작성하는 방법부터 찾아보았는데 우선 내가 개발하는 데에 쓰는 용도로 notion을 이용해서 제작하였다.
+
+다음과 같은 형식으로 기능, http method, api path, token, 각 기능에 필요한 DTO를 정리하려고 하였다.
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d72754a5-6647-40b9-9edf-7922b38fc3aa/83c65a70-5804-4f70-a39b-c9fbc2d6a828/image.png)
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d72754a5-6647-40b9-9edf-7922b38fc3aa/ea50dadc-eebb-4fd0-a453-84e770dc351d/image.png)
+
+### 협업 때 사용할 명세서
+
+노션은 내가 보려고 한거고.. 실제로 노션을 쓰면 실제 코드와 동기화가 안되기 때문에 비효율적 + 에러핸들링 어려움의 문제가 있을 것이라고 생각하였다.
+
+코드 기반으로 api 명세서를 생성하는 swagger, spring REST docs 에 대해 찾아보았다
+
+1. swagger
+
+2. spring REST docs
