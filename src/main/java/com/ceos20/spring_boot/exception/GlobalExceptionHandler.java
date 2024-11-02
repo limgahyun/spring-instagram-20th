@@ -18,8 +18,8 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        logger.error("MethodArgumentNotValidException 발생: {}", ex.getMessage(), ex);
+    protected ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        logger.error("MethodArgumentNotValidException 발생: {}", e.getMessage(), e);
         return ResponseEntity.status(BAD_REQUEST).body("잘못된 요청입니다.");
     }
 
