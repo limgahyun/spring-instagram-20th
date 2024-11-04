@@ -3,7 +3,6 @@ package com.ceos20.spring_boot.post.service;
 import com.ceos20.spring_boot.comment.domain.PostComment;
 import com.ceos20.spring_boot.comment.repository.CommentRepository;
 import com.ceos20.spring_boot.config.exception.ExceptionCode;
-import com.ceos20.spring_boot.config.exception.ExceptionResponse;
 import com.ceos20.spring_boot.post.domain.Post;
 import com.ceos20.spring_boot.post.dto.request.PostCreatRequestDto;
 import com.ceos20.spring_boot.post.dto.response.PostListResponseDto;
@@ -11,14 +10,12 @@ import com.ceos20.spring_boot.post.dto.response.PostResponseDto;
 import com.ceos20.spring_boot.post.repository.PostRepository;
 import com.ceos20.spring_boot.user.domain.User;
 import com.ceos20.spring_boot.user.repository.UserRepository;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
