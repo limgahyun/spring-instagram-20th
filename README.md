@@ -218,3 +218,70 @@ SwaggerConfig 파일에서 로컬 서버로 url 설정을 해둔 후, `@Tag`, `@
 에러 발생 시 설정해둔 exception status, message가 표시되는 것을 확인하였다.
 
 <img width="1427" alt="image" src="https://github.com/user-attachments/assets/18d6c70d-f3f1-4ce1-94b2-e2c6cff061ad">
+
+## JWT 인증(Authentication) 방법
+### Cookie
+cookie : 브라우저에 저장
+- 보안이 좋지 않음
+<img width="742" alt="image" src="https://github.com/user-attachments/assets/93cb990b-d60b-4f10-9638-a39af23a07b0">
+
+### Cookie + Session
+session : 서버에 저장
+- cookie만 사용하는 것에 비해 보안 유지가 가능함
+  - session id가 탈취되더라도 session data를 전부 지워버리는 방법으로 대처 가능
+- 요청을 보낼 때마다 session id를 조회해야함
+- 사용자가 많아질수록 메모리를 차지함
+- stateful -> scale out이 번거로움
+<img width="752" alt="image" src="https://github.com/user-attachments/assets/3d0d0b84-d256-409b-9c80-7d6b59255367">
+
+❗️cookie, session의 단점을 보완하는 방법 -> JWT !!
+
+### JWT (Access Token + Refresh Token)
+인증에 필요한 정보들을 Token에 담아 암호화시켜 사용하는 방식
+
+**서명된 토큰 -> stateless**
+
+구성요소
+1. Header
+   ```json
+   {
+     "typ": "JWT",
+     "alg": "HS512"
+   }
+   ```
+2. Payload
+   ```json
+   {
+     "sub": "1",
+     "iss": "ori",
+     "exp": 1636989718,
+     "iat": 1636987918
+   }
+   ```
+   - iss (Issuer) : 토큰 발급자
+   - sub (Subject) : 토큰 제목 - 토큰에서 사용자에 대한 식별값이 됨
+   - aud (Audience) : 토큰 대상자
+   - exp (Expiration Time) : 토큰 만료 시간
+   - nbf (Not Before) : 토큰 활성 날짜 (이 날짜 이전의 토큰은 활성화 되지 않음을 보장)
+   - iat (Issued At) : 토큰 발급 시간
+   - jti (JWT Id) : JWT 토큰 식별자 (issuer가 여러명일 때 이를 구분하기 위한 값)
+   식별을 위해 필요한 정보만 담고, 민감한 정보들을 담지 않도록 주의
+
+3. Signature
+
+   header를 디코딩한 값, payload를 디코딩한 값을 합치고 이를 서버가 가지고 있는 개인키(your-256-bit-secret)를 가지고 암호화 되어있는 상태
+
+**jwt는 cookie와 session의 단점 보완**
+- 이미 토큰 자체가 인증된 정보이기 때문에 세션 저장소와 같은 별도의 인증 저장소가 필수적으로 필요하지 않음
+- 세션과는 다르게 클라이언트의 상태를 서버가 저장하지 않아도됨
+- signature를 공통키 개인키 암호화를 통해 막아두었기 때문에 데이터에 대한 보완성 향상
+
+❓그렇다면 jwt의 단점은 없을까?
+
+토큰이 탈취당하면 만료될 때까지 대처가 불가능 !
+
+이를 해결하기 위해서는 Expiration Time(만료시간)을 짧게 설정할 수 있다
+
+만료시간이 짧은 경우 UX적으로 불편함. 이을 해결하고 짧은 만료시간을 보완하기 위한 재발급 방식
+1. Sliding Session : 특정한 서비스를 계속 사용하고 있는 특정 유저에 대해 만료 시간을 연장 시켜주는 방법
+2. Refresh Token : JWT를 처음 발급할 때 Access Token과 함께 Refresh Token이라는 토큰을 발급하는 방법
