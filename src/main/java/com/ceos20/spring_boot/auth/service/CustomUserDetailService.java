@@ -1,8 +1,8 @@
 package com.ceos20.spring_boot.auth.service;
 
+import com.ceos20.spring_boot.auth.domain.CustomUserDetails;
 import com.ceos20.spring_boot.exception.ExceptionCode;
 import com.ceos20.spring_boot.user.domain.User;
-import com.ceos20.spring_boot.user.dto.request.UserJoinRequestDto;
 import com.ceos20.spring_boot.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,14 +18,16 @@ import org.webjars.NotFoundException;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class AuthService {
+public class CustomUserDetailService implements UserDetailsService {
 
-    public void joinUser(UserJoinRequestDto userDto) {
-        checkEmailDuplication(userDto.email());
-        checkNicknameDuplication(userDto.nickname());
+    private final UserRepository usersRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-        User user = userDto.toEntity(); //만들어진 객체를 user 엔티티로 변환
-        userRepository.save(user); //user 엔티티 저장
-    }
+    @Override
+    public UserDetails loadUserByUsername(String nickname) throws UsernameNotFoundException {
+        User user = usersRepository.findByNickname(nickname)
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.NOT_FOUND_USER.getMessage()));
 
+        return new CustomUserDetails(user);
+    };
 }

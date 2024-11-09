@@ -1,10 +1,6 @@
 package com.ceos20.spring_boot.user.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +30,9 @@ public class User {
     @Column(nullable = true, length = 11)
     private String phone;
 
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
     @Builder
     public User(Long id, String nickname, String name, String email, String password, String phone) {
         this.nickname = nickname;
@@ -41,5 +40,6 @@ public class User {
         this.email = email;
         this.password = password;
         this.phone = phone;
+        this.role = UserRole.USER;
     }
 }
