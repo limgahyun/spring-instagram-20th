@@ -5,11 +5,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public record UserJoinRequestDto(String name, String nickname, String password, String email, String phone) {
 
-    public User toEntity(final BCryptPasswordEncoder bCryptPasswordEncoder) {
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+    public User toEntity() {
         return User.builder()
                 .name(name)
                 .nickname(nickname)
-                .password(bCryptPasswordEncoder.encode(password))
+                .password(encoder.encode(password))
                 .email(email)
                 .phone(phone)
                 .build();
