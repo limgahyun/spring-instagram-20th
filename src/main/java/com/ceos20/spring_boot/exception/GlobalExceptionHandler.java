@@ -1,4 +1,4 @@
-package com.ceos20.spring_boot.config.exception;
+package com.ceos20.spring_boot.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

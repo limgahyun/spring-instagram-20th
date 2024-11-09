@@ -2,7 +2,7 @@ package com.ceos20.spring_boot.post.service;
 
 import com.ceos20.spring_boot.comment.domain.PostComment;
 import com.ceos20.spring_boot.comment.repository.CommentRepository;
-import com.ceos20.spring_boot.config.exception.ExceptionCode;
+import com.ceos20.spring_boot.exception.ExceptionCode;
 import com.ceos20.spring_boot.post.domain.Post;
 import com.ceos20.spring_boot.post.dto.request.PostCreatRequestDto;
 import com.ceos20.spring_boot.post.dto.response.PostListResponseDto;
