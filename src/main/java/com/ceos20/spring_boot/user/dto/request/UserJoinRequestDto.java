@@ -4,11 +4,11 @@ import com.ceos20.spring_boot.user.domain.User;
 
 public record UserJoinRequestDto(String name, String nickname, String password, String email, String phone) {
 
-    public User toEntity() {
+    public User toEntity(String encodedPassword) {
         return User.builder()
                 .name(name)
                 .nickname(nickname)
-                .password(password)
+                .password(encodedPassword)
                 .email(email)
                 .phone(phone)
                 .build();
