@@ -221,25 +221,28 @@ SwaggerConfig 파일에서 로컬 서버로 url 설정을 해둔 후, `@Tag`, `@
 
 ## JWT 인증(Authentication) 방법
 ### Cookie
-cookie : 브라우저에 저장
 - 보안이 좋지 않음
+
 <img width="742" alt="image" src="https://github.com/user-attachments/assets/93cb990b-d60b-4f10-9638-a39af23a07b0">
 
 ### Cookie + Session
-session : 서버에 저장
+> cookie : 브라우저에 저장
+
+> session : 서버에 저장
 - cookie만 사용하는 것에 비해 보안 유지가 가능함
   - session id가 탈취되더라도 session data를 전부 지워버리는 방법으로 대처 가능
 - 요청을 보낼 때마다 session id를 조회해야함
 - 사용자가 많아질수록 메모리를 차지함
 - stateful -> scale out이 번거로움
+
 <img width="752" alt="image" src="https://github.com/user-attachments/assets/3d0d0b84-d256-409b-9c80-7d6b59255367">
 
-❗️cookie, session의 단점을 보완하는 방법 -> JWT !!
+❗️cookie, session의 단점을 보완하는 방법 → JWT !!
 
 ### JWT (Access Token + Refresh Token)
 인증에 필요한 정보들을 Token에 담아 암호화시켜 사용하는 방식
 
-**서명된 토큰 -> stateless**
+**서명된 토큰 → stateless**
 
 구성요소
 1. Header
@@ -265,7 +268,7 @@ session : 서버에 저장
    - nbf (Not Before) : 토큰 활성 날짜 (이 날짜 이전의 토큰은 활성화 되지 않음을 보장)
    - iat (Issued At) : 토큰 발급 시간
    - jti (JWT Id) : JWT 토큰 식별자 (issuer가 여러명일 때 이를 구분하기 위한 값)
-   식별을 위해 필요한 정보만 담고, 민감한 정보들을 담지 않도록 주의
+   - 식별을 위해 필요한 정보만 담고, 민감한 정보들을 담지 않도록 주의
 
 3. Signature
 
@@ -278,10 +281,31 @@ session : 서버에 저장
 
 ❓그렇다면 jwt의 단점은 없을까?
 
-토큰이 탈취당하면 만료될 때까지 대처가 불가능 !
+> 토큰이 탈취당하면 만료될 때까지 대처가 불가능 !
 
 이를 해결하기 위해서는 Expiration Time(만료시간)을 짧게 설정할 수 있다
 
 만료시간이 짧은 경우 UX적으로 불편함. 이을 해결하고 짧은 만료시간을 보완하기 위한 재발급 방식
 1. Sliding Session : 특정한 서비스를 계속 사용하고 있는 특정 유저에 대해 만료 시간을 연장 시켜주는 방법
 2. Refresh Token : JWT를 처음 발급할 때 Access Token과 함께 Refresh Token이라는 토큰을 발급하는 방법
+
+<img width="701" alt="image" src="https://github.com/user-attachments/assets/7a58c87c-6b14-41fd-bb52-b2d06e7615e0">
+
+```text
+1. 사용자가 로그인한다.
+2. 서버는 회원 확인 후 서명된 JWT 생성하여 클라이언트에 응답한다.
+이때 Access Token과 Refresh Token을 같이 전달한다.
+3. 사용자가 요청할 때마다 Access Token와 함께 보낸다.
+4. 서버에서 Access Token을 검증한다.
+5. 검증이 완료되면 응답을 보낸다.
+6. 🚨 Access Token 만료되었다.
+7. 사용자가 Access Token과 함께 데이터를 요청한다.
+8. 서버에서 Access Token이 만료된 것을 확인한다.
+9. 만료되었다는 것을 알려주는 응답을 보낸다.
+10. 사용자는 만료 응답을 받고 Access Token과 Refresh Token을 같이 담아 발급 요청을 보낸다.
+11. Refresh Token을 확인한 후 Access Token을 발급한다.
+12. Access Token과 함께 응답을 보낸다.
+```
+
+### OAuth (Open Authorization)
+<img width="744" alt="image" src="https://github.com/user-attachments/assets/b05ff5e8-4f19-43d6-b887-865bc35c0f0b">
