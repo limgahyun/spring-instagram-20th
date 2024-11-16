@@ -636,9 +636,33 @@ Caused by: java.net.ConnectException: Connection refused
 
 3. 이후 다시 application image를 빌드한 후 실행하였으나 같은 에러 발생 ..
    트러블 슈팅 실패 ... 
+4. docker-compose 실행 성공 후 healthcheck를 통해 mysql 서버에 대한 상태 체크를 해줄 필요가 있는 것 같아 Dockerfile 수정
 
-### docker-compose
-docker-compose 실행하자 성공... 왤까 ..?
+    ```dockerfile
+    FROM mysql:latest
+    HEALTHCHECK --interval=10s CMD mysqladmin ping -h localhost || exit 1
+    ```
+   dockerfile이 달라졌기 때문에 image build부터 다시 실행
+   - instagram 이미지 생성 : `docker build -t instagram .`
+    
+    - mysql 컨테이너 생성 및 실행 : `docker run --name mysqltest -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=InstagramDB -p 3306:3306 -d mysql:latest`
+
+    - instagram 컨테이너 생성 및 실행 : `docker run --name instagramtest -e MYSQL_ROOT_PASSWORD=password -p 8080:8080 instagram:latest`
+   <img width="1506" alt="image" src="https://github.com/user-attachments/assets/12db835b-1a8e-4369-9754-56847846a6ca">
+    성공 !!
+
+### 결론
+    
+instagram 컨테이너를 실행하기 위해 mysql 컨테이너의 정상적인 작동이 선행되어야 하고, 이를 확인하기 위해 healthcheck를 사용해야함.
+
+### 근데 모르겠는 점..
+
+healthcheck를 한다는건 mysql 서비스의 상태가 unhealty|healthy 중 무엇인지 체크를 하는거지, unhealthy한 서비스를 healthy하게 수정보완해주는 건 아닌데, 왜 healthcheck를 함으로써 문제가 해결된건지 ?? 
+
+instagram 컨테이너를 생성&실행 할 때, 처음에는 mysql 컨테이너가 unhealthy하다가 정상화가 되는데, healthcheck를 하지 않으면 mysql이 unhealthy한 순간 instagram 컨테이너 실행이 실패하고, retry를 하지 않기 때문에 오류가 났던건가?? 
+
+healthcheck를 하게되면 mysql이 잠시 unhealthy하더라도 instagram을 재부팅 하기 때문에 위의 문제가 해결..!! 이라고 추측 중인데 맞는지 모르겠음 ㅜㅜ
+
+### docker-compose 실습
 <img width="1363" alt="image" src="https://github.com/user-attachments/assets/4207400a-835c-48f1-8bc0-0ca690f27d9d">
-
 <img width="1362" alt="image" src="https://github.com/user-attachments/assets/e4de3f12-80a0-4796-b25c-194826f27eef">
