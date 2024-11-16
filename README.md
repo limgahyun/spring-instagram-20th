@@ -1,7 +1,7 @@
 # spring-instagram-20th
 CEOS 20th BE study - instagram clone coding
 
-## DB Modeling
+# DB Modeling
 인스타그램 전체를 클론 코딩하기 보다는 기능을 최대한 축소시키고자 먼저 기능 정리를 하였다.
 
 > 1. 회원가입
@@ -34,12 +34,12 @@ CEOS 20th BE study - instagram clone coding
 
 ![img.png](img.png)
 
-### POST
+## POST
 `BaseEntity` : `Post`와 `PostComment` Entity에서 `createdAt`, `updatedAt` 속성을 공통적으로 사용하고 있어 `BaseEntity`로 분리하여 구현하였다.
 
 `PostComment` : `PostComment`는 자기 자신을 참조하여 `parent_id`를 foriegn key로 갖는다. 이 값이 NULL인 경우 댓글, 값이 존재하는 경우 대댓글이다.
 
-### MESSAGE
+## MESSAGE
 `Message` : Message의 Type이 text, image, post 세가지로 분류되므로, 다음과 같은 상속관계를 갖는다
 ![img_1.png](img_1.png)
 이때 각각 테이블을 생성하여 저장공간을 효율적으로 사용하기 위하여 조인 전략을 선택하였고, `@Inheritance(strategy=InheritanceType.JOINED)` annotation을 사용하였다.
@@ -48,8 +48,8 @@ CEOS 20th BE study - instagram clone coding
 `ChattingRoom` : 채팅을 하던 상대방이 인스타그램을 탈퇴하더라도 채팅 기록은 남아있도록 하기 위하여 `ChattingRoom`을 분리하여 구현하였다.
 
 ---
-## JPA 심화
-### 주요 기능
+# JPA 심화
+## 주요 기능
 - 회원 가입
 - 회원정보 변경
 - 로그인
@@ -62,7 +62,7 @@ CEOS 20th BE study - instagram clone coding
 - 게시글 삭제
 - DM 전송
 
-### UserService
+## UserService
 회원가입을 할 때, `nickname`과, `email` 중복을 방지하기 위해 `checkNicknameDuplication`, `checkEmailDuplication`을 사용하였습니다.
 ```java
 @Transactional(readOnly = true)
@@ -83,7 +83,7 @@ public void joinUser(UserJoinRequestDto userDto) {
     userRepository.save(user);
 }
 ```
-### UserServiceTest
+## UserServiceTest
 `nickname`에 대한 중복제한이 잘 구현이 되었는지 테스트하기 위하여 `nickname`이 중복인 경우와 아닌 경우를 구분하여 테스트를 진행하였습니다.
 ```java
 // nickname이 중복인 경우 회원가입 테스트
@@ -108,7 +108,7 @@ void joinSameUserTest() {
     verify(userRepository, never()).save(any(User.class));
 }
 ```
-### N+1 문제
+## N+1 문제
 `jpql` + `@EntityGraph` 혼합 방법을 사용하여 N+1문제를 해결하였습니다.
 ```java
 @Test
@@ -119,7 +119,7 @@ public void findAllEntityGraph () {
 }
 ```
 
-## CRUD API
+# CRUD API
 ```java
 @RestController
 @RequiredArgsConstructor
@@ -142,7 +142,7 @@ public class PostController {
 ```
 
 
-## Global Exception
+# Global Exception
 1. `exception code`, `success code` 정의
     ```java
     BAD_REQUEST_ERROR(HttpStatus.BAD_REQUEST, "Bad Request Exception"),
@@ -165,9 +165,9 @@ public class PostController {
     }
     ```
    게시글을 조회했을 때 해당 게시글이 존재하지 않을 때 `NotFoundException`을 통해 설정해둔 `NOT_FOUND_POST`에 대한 exception message를 표시한다.
-## API 명세서
+# API 명세서
 
-### 개발 전 명세서 ?
+## 개발 전 명세서 ?
 
 DTO를 생성할 때에도, CRUD api 를 생성하려고 할 때에도, 기능들에 대한 정리가 안되어있다보니 어디부터 손대할지 막막하고 개발 도주에 수정할 것들이 많아져서 뒤죽박죽이 되는 느낌이었다. 이를 해소하고자 API 명세서를 작성하는 방법부터 찾아보았는데 우선 내가 개발하는 데에 쓰는 용도로 notion을 이용해서 제작하였다.
 
@@ -175,7 +175,7 @@ DTO를 생성할 때에도, CRUD api 를 생성하려고 할 때에도, 기능�
 
 ![image](https://github.com/user-attachments/assets/df0c130d-f8cf-48fd-8aa6-511e287f6bb8)
 
-### 협업 때 사용할 명세서
+## 협업 때 사용할 명세서
 
 노션은 내가 보려고 한거고.. 실제로 노션을 쓰면 실제 코드와 동기화가 안되기 때문에 비효율적 + 에러핸들링 어려움의 문제가 있을 것이라고 생각하였다.
 
@@ -190,7 +190,7 @@ DTO를 생성할 때에도, CRUD api 를 생성하려고 할 때에도, 기능�
 
 프론트 개발을 할 때 swagger-ui를 사용해보았는데 ui가 그리 보기 편하진 않았어서.. REST docs를 사용하고 싶었지만..! 테스트를 만들어서 실행하는게 익숙하지 않기 때문에 처음에는 swagger를 시도해보기로 결정하였다.
 
-### swagger-ui
+## swagger-ui
 ```java
 @Configuration
 @OpenAPIDefinition(
@@ -214,18 +214,18 @@ SwaggerConfig 파일에서 로컬 서버로 url 설정을 해둔 후, `@Tag`, `@
 
 <img width="1512" alt="image" src="https://github.com/user-attachments/assets/d3a57457-8df8-4f1b-bf38-f4c6c0a2d824">
 
-## Controller 통합 테스트
+# Controller 통합 테스트
 에러 발생 시 설정해둔 exception status, message가 표시되는 것을 확인하였다.
 
 <img width="1427" alt="image" src="https://github.com/user-attachments/assets/18d6c70d-f3f1-4ce1-94b2-e2c6cff061ad">
 
-## JWT 인증(Authentication) 방법
-### Cookie
+# JWT 인증(Authentication) 방법
+## Cookie
 - 보안이 좋지 않음
 
 <img width="742" alt="image" src="https://github.com/user-attachments/assets/93cb990b-d60b-4f10-9638-a39af23a07b0">
 
-### Cookie + Session
+## Cookie + Session
 > cookie : 브라우저에 저장
 
 > session : 서버에 저장
@@ -239,7 +239,7 @@ SwaggerConfig 파일에서 로컬 서버로 url 설정을 해둔 후, `@Tag`, `@
 
 ❗️cookie, session의 단점을 보완하는 방법 → JWT !!
 
-### JWT (Access Token + Refresh Token)
+## JWT (Access Token + Refresh Token)
 인증에 필요한 정보들을 Token에 담아 암호화시켜 사용하는 방식
 
 **서명된 토큰 → stateless**
@@ -307,5 +307,34 @@ SwaggerConfig 파일에서 로컬 서버로 url 설정을 해둔 후, `@Tag`, `@
 12. Access Token과 함께 응답을 보낸다.
 ```
 
-### OAuth (Open Authorization)
+## OAuth (Open Authorization)
 <img width="744" alt="image" src="https://github.com/user-attachments/assets/b05ff5e8-4f19-43d6-b887-865bc35c0f0b">
+
+# Docker
+## trouble shooting
+
+### Error message
+
+```json
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+Caused by: java.net.ConnectException: Connection refused
+```
+
+### 문제 원인 및 시도
+
+1. `useSSL=false` 설정
+
+   접속하려는 mysql 데이타베이스의 SSL설정의 기본값이 true인 경우, 접속하려는 클라이언트가 ssl로 접속하지 않고, ssl이 아닌 일반적인 연결로 접속하기 때문에 발생한다. mysql서버쪽에서는 유효하지 않는 패킷이 넘어오는 것이 때문에 오류를 낸다고 생각하면 된다.
+
+   JDBC 접속시에 SSL연결이 아닌 일반적인 연결(물론 보안이 약함)이라고 명시적으로 설정을 하면 된다.
+
+   - SSL 이란 Secure Socket Layer의 약자로서 클라이언트와 서버가 통신을 할때 암호화를 통해서 보안을 높힌 접속을 말한다.
+
+2. mysql container 실행을 안해둔 상태였다.. 그런데 실행하려고 보니? 이미 3306포트를 사용중이라고 떴다
+   - `lsof -i :3306` 명령어를 통해 3306 포트를 사용중인지 확인하였으나 없었다 .. 
+   - 무언가 문제가 생긴 것 같아 `docker system prune -a` 명령어로 모든 캐시를 삭제한 후 다시 mysql container 생성 → 성공!
+
+3. 이후 다시 application image를 빌드한 후 실행하였으나 같은 에러 발생 ..
+   트러블 슈팅 실패 ... 계속 시도 중 .........
