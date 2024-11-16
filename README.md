@@ -551,7 +551,7 @@ services:
     env_file: #환경변수는 .env파일 참조
       - .env
 
-volumes:
+volumes: #파일 시스템 공유 방식
   dbdata:
   app:
 
@@ -559,6 +559,9 @@ networks:
   network:
     driver: bridge
 ```
+
+
+docker-compose 실행 : `docker-compose -f docker-compose.yml up --build`
 
 ### Depends_on
 
@@ -632,9 +635,10 @@ Caused by: java.net.ConnectException: Connection refused
    - 무언가 문제가 생긴 것 같아 `docker system prune -a` 명령어로 모든 캐시를 삭제한 후 다시 mysql container 생성 → 성공!
 
 3. 이후 다시 application image를 빌드한 후 실행하였으나 같은 에러 발생 ..
-   트러블 슈팅 실패 ... 계속 시도 중 .........
+   트러블 슈팅 실패 ... 
 
 ### docker-compose
-docker-compose 로 mysql, instagram image 실행 후 성공... 왤까 ..?
+docker-compose 실행하자 성공... 왤까 ..?
+<img width="1363" alt="image" src="https://github.com/user-attachments/assets/4207400a-835c-48f1-8bc0-0ca690f27d9d">
 
 <img width="1362" alt="image" src="https://github.com/user-attachments/assets/e4de3f12-80a0-4796-b25c-194826f27eef">
