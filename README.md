@@ -311,6 +311,301 @@ SwaggerConfig 파일에서 로컬 서버로 url 설정을 해둔 후, `@Tag`, `@
 <img width="744" alt="image" src="https://github.com/user-attachments/assets/b05ff5e8-4f19-43d6-b887-865bc35c0f0b">
 
 # Docker
+
+Go언어로 작성된 리눅스 **컨테이너 기반**으로하는 **오픈소스 가상화 플랫폼**
+
+컨테이너를 사용하여 각각의 프로그램을 분리된 환경에서 실행 및 관리할 수 있는 툴
+
+### 가상화를 왜 사용하나요?
+
+CPU 사용률이 낮은 서비스들을 위해 서버를 실행하는건 서버 리소스 낭비임. 그렇다고 모든 서비스를 한 서버에 올리면 안정성 문제가 발생할 수 있음
+
+이러한 문제를 해결함으로써 컴퓨터의 성능을 효율적으로 사용하고자 하는 방법이 서버 가상화! → 안정성 강화, 리소스 활용
+
+### 가상머신 (VM) vs 컨테이너
+
+<img width="648" alt="image" src="https://github.com/user-attachments/assets/4bde0063-d59e-4d69-afa4-e2a3f008be7c">
+
+1. Virtual Machine : Host OS위에 Hypervison engine, 그리고 그 위에 Guest OS를 올려 사용함. 가상화된 하드웨어 위에 OS가 올라가는 형태이므로 Host와 완전히 분리
+
+   → 장점 : 격리 레벨이 높아 보안성 좋음. 커널을 공유하지 않기 때문에 멀티 OS가 가능
+
+2. 컨테이너 : Docker Engine 위에 어플리케이션 실행에 필요한 바이너리만 올라감. 따라서 Host의 커널을 공유하고, 이 덕분에 io 처리가 쉬워 성능의 효율을 높일 수 있음
+
+   → 장점 : 성능 향상, 이식성이 좋음, 쉽게 scale out을 할 수 있는 유연성
+
+
+⇒ 컨테이너를 사용하는 것은 가상 머신을 생성하는 것이 아니라, Host OS가 사용하는 자원을 분리하여 여러 환경으로 만든 것
+
+### Container
+
+1. 개념
+
+   윈도우 환경 사용자 : 윈도우 환경을 사용해보면 하나의 컴퓨터에 여러 사용자로 나눠서 사용할 수 있게 구성되어있음. 각 사용자의 환경에 들어가보면 독립적으로 세팅이 되어있음.
+
+   컨테이너 : 컨테이너도 이처럼 하나의 컴퓨터 환경에서 독립적인 컴퓨터 환경을 구성해서, 각 환경에 프로그램을 별도로 설치할 수 있게 만든 개념.
+
+   이러한 **미니 컴퓨터**를 docker에서 container라고 함.
+
+   컨테이너들을 포함하고 있는 컴퓨터 : host 컴퓨터
+
+
+1. 컨테이너의 특징 : **독립성**
+- 디스크 (저장 공간) : 각 컨테이너마다 서로 각자의 저장 공간을 가지고 있음. 일반적으로 서로 다른 컨테이너의 파일을 접근할 수 없음
+- 네트워크 (IP, Port) : 컨테이너는 각자의 IP주소를 가지고 있음
+
+### Docker Image
+
+닌텐도의 칩같은 역할..! (게임기에 게임 칩을 꽂으면 해당 게임이 실행됨)
+
+mysql 서버를 이미지로 만들었다면, 이 이미지를 docker로 실행시키는 순간 container 환경에서 mysql 서버가 실행됨
+
+- 프로그램을 실행하는 데에 필요한 설치 과정, 설정, 버전 정보 등 (프로그램 실행에 필요한 모든 것을 포함)
+
+### Dockerfile
+
+```docker
+FROM openjdk:17
+ARG JAR_FILE=/build/libs/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar", "/app.jar"]
+```
+
+- FROM
+
+  기반이 되는 이미지 레이어
+
+  <이미지 이름>:<태그> 형식으로 작성
+
+- MAINTAINER
+
+  메인테이너 정보
+
+- RUN
+
+  도커 이미지가 생성되기 전에 수행할 쉘 명령어
+
+- VOLUME
+
+  디렉터리 내용을 컨테이너에 저장하지 않고 호스트에 저장하도록 설정.
+
+- CMD
+
+  CMD에서 설정한 실행 파일이 실행될 디렉터리
+
+- EXPOSE
+
+  호스트와 연결할 포트 번호
+
+- COPY
+
+  빌드 시 layer 캐싱 활용
+
+- COPY
+
+  이미지화 시킬 파일 경로, 이미지로 만들 때 읽을 파일 경로
+
+  도커 내부 이미지 저장 경로
+
+
+### 도커 동작 구조
+
+[Dockerfile] - build -> [docker Image] - run -> [docker Container]
+
+<img width="602" alt="image" src="https://github.com/user-attachments/assets/35950a68-aeae-42ae-85f3-0e616588a1fe">
+
+`docker build -t [도커_이미지_이름:tag]` : build (도커 이미지 생성)
+
+`docker run --name [도커_컨테이너_이름:tag] [도커_이미지_이름:tag]` : run (도커 컨테이너 생성 및 실행)
+
+### .dockerignore
+
+Docker 이미지 생성 시 이미지 안에 들어가지 않을 파일 지정
+
+```docker
+node_modules
+npm-debug.log
+Dockerfile*
+docker-compose*
+.dockerignore
+.git
+.gitignore
+README.md
+LICENSE
+.vscode
+```
+
+### Docker Architecture
+
+![image](https://github.com/user-attachments/assets/c1ceefbd-3709-4955-9763-6800d99eac8e)
+
+1. Client : docker 명령어를 사용하여 컨테이너를 실행, 관리, 모니터링 하고 이미지 빌드나 다운로드 등의 행동을 수행
+
+   command : `run`, `build`, `pull`
+
+2. Host
+
+   client의 요청을 받아들여 작업을 수행
+
+   docker daemon을 실행하여 컨테이너를 생성, 시작, 중지 및 관리를 수행
+
+3. Registry
+
+   docker 이미지를 저장하고 관리하는 중앙 집중식 저장소
+
+   docker hub, 독립적인 docker registry가 있음
+
+   - Docker Hub & Docker Registry
+
+      <img width="677" alt="image" src="https://github.com/user-attachments/assets/a9a5d143-a8ef-47e7-8021-06025208344b">
+
+      1. Docker Hub : 이미지를 저장하고 관리 (github 같은…)
+      2. Docker Registry : docker hub가 공개적인 저장소라면, docker registry는 비공개적으로 격리된 저장소
+
+
+## Docker 실습
+
+1. [docker 설치](https://www.docker.com/products/docker-desktop/)
+2. Gradle 탭에서 Tasks-build-bootJar 실행 → build/libs 경로에 jar파일 생성
+3. Dockerfile 생성
+4. mysql 도커 이미지 생성 및 실행
+   1. 도커 이미지 생성
+
+       ```bash
+       docker build -t mysql .
+       ```
+
+   2. 도커 이미지 실행 → 컨테이너 생성
+
+       ```bash
+       docker run --name mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=InstagramDB -p 3306:3306 -d mysql:latest
+       ```
+
+5. instagram 도커 이미지 생성 및 실행
+   1. 도커 이미지 생성
+
+       ```bash
+       docker build -t instagram .
+       ```
+
+   2. 도커 이미지 실행 → 컨테이너 생성
+
+       ```bash
+       docker run --name instagram -p 8080:8080 mysql:latest
+       ```
+
+6. http://localhost:8080 에 서버가 잘 띄워져 있다면 성공!
+
+### 이미지 하나씩 만들기 귀찮은데? 한번에 관리할 수 없나 ??
+
+- 이미지를 여러개 생성해서 각각 실행시키기 귀찮음 ..
+- 상호작용하는 이미지들이 하나의 네트워크 상에 있어야함
+- 파일 시스템 공유 방식 제어 필요
+
+## Docker-compose
+
+```yaml
+version: "3"
+
+services:
+
+# mysql
+  database:
+    container_name: mysql
+    image: mariadb:latest #mac
+    environment:
+      MYSQL_ROOT_PASSWORD: ${LOCAL_DB_PASSWORD}
+      MYSQL_DATABASE: InstagramDB
+      TZ: 'Asia/Seoul'
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - 3306:3306
+    restart: always
+    networks:
+      - network
+    healthcheck: #
+      test: [ "CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -p${DB_PASSWORD} --silent" ]
+      interval: 30s
+      retries: 5
+
+#instagram
+  web:
+    container_name: instagram
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      url: ${LOCAL_DB_URL}
+      username: ${LOCAL_DB_USERNAME}
+      password: ${LOCAL_DB_PASSWORD}
+    restart: always
+    volumes:
+      - app:/app
+    networks:
+      - network
+    env_file: #환경변수는 .env파일 참조
+      - .env
+
+volumes:
+  dbdata:
+  app:
+
+networks:
+  network:
+    driver: bridge
+```
+
+### Depends_on
+
+서비스 간의 **의존관계**를 정의하는 데에 사용함 (서비스 실행의 선후관계)
+
+- `depends_on`은 서비스의 **컨테이너를 실행하는 순서**만 관리
+- 컨테이너 내부 애플리케이션의 준비 상태(health 상태)까지 보장하지 않음 → healthcheck
+
+### Healthcheck
+
+컨테이너와 어플리케이션 상태를 모니터링하기 위한 서비스
+
+docker에서 컨테이너의 상태를 주기적으로 점검하는 기능
+
+- healthy (정상) : 종료 코드 0
+- unhealthy (비정상) : 종료 코드 1 이상, 설정 시간 내에 응답하지 못한 경우
+- none (설정되지 않음)
+
+컨테이너 실행 후에 healthcheck를 추가하거나 변경할 수 없음. 이미지 빌드 시에 dockerfile (docker-compose.yml)에서 정의
+
+장점
+- 어플리케이션의 신뢰성 향상
+- 자동 복구 및 장애 대응 (unhealthy인 경우 오케스트레이션 도구가 해당 컨테이너를 재시작하거나 교체)
+- 장애 원인 파악의 용이성
+- 오케스트레이션과의 통합
+
+### 오케스트레이션
+
+1. 개념
+
+   여러 컨테이너를 사용하는 복잡한 시스템에서 컨테이너의 배포, 관리, 확장 및 복구를 자동화 하는 과정
+
+   컨테이너 관리 도구 : Docker Swarm, Kubernetes, Amazon ECS
+
+2. 주요 기능
+   - 컨테이너 배포 : 컨테이너를 적절한 노드(서버)에 자동으로 배포
+   - 확장 (scaling) :
+      - 사용자가 늘어나면 컨테이너 수를 자동으로 증가(수평 확장)
+      - 트래픽이 줄어들면 컨테이너 수를 줄여 비용을 절감
+   - 상태 관리
+      - 컨테이너 상태를 지속적으로 모니터링
+      - 컨테이너가 비정상 종료되거나 `HEALTHCHECK`에서 "unhealthy"로 표시되면 자동으로 재시작
+   - 로드 밸런싱 : 들어오는 요청을 여러 컨테이너에 고르게 분산하여 성능을 최적화
+   - 네트워크 관리 : 컨테이너 간의 네트워크를 구성하고, 통신을 안전하게 관리
+   - 롤링 업데이트 : 새로운 버전의 애플리케이션을 배포할 때 중단 없는 업데이트 지원
+   - 로깅 및 모니터링 : 실행 중인 컨테이너의 로그를 수집하고 상태를 모니터링
+
 ## trouble shooting
 
 ### Error message
