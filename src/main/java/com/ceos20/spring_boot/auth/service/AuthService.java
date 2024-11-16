@@ -20,6 +20,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    /*
     @Transactional
     public User login(String email, String password) {
         User user = userRepository.findByEmail(email)
@@ -37,4 +38,5 @@ public class AuthService {
             throw new
         }
     }
+    */
 }
