@@ -338,3 +338,8 @@ Caused by: java.net.ConnectException: Connection refused
 
 3. 이후 다시 application image를 빌드한 후 실행하였으나 같은 에러 발생 ..
    트러블 슈팅 실패 ... 계속 시도 중 .........
+
+### docker-compose
+docker-compose 로 mysql, instagram image 실행 후 성공... 왤까 ..?
+
+<img width="1362" alt="image" src="https://github.com/user-attachments/assets/e4de3f12-80a0-4796-b25c-194826f27eef">
