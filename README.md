@@ -666,3 +666,125 @@ healthcheck를 하게되면 mysql이 잠시 unhealthy하더라도 instagram을 �
 ### docker-compose 실습
 <img width="1363" alt="image" src="https://github.com/user-attachments/assets/4207400a-835c-48f1-8bc0-0ca690f27d9d">
 <img width="1362" alt="image" src="https://github.com/user-attachments/assets/e4de3f12-80a0-4796-b25c-194826f27eef">
+
+
+## 수동 배포
+
+### 배포 방법
+### ec2 빌드
+
+1. 콘솔 회원가입, 로그인
+    1. 지메일 +1 숫자 하면 계속 만들수잇음
+    2. limgh+1@gmail.com
+2. 우분투..
+3. instance 세부정보 → 연결 버튼 → ec2 인스턴스에 연결 ‘연결’ 버튼
+
+### cloudshell
+
+1. sudo apt update
+2. 도커 설치
+
+   https://everydayyy.tistory.com/121
+
+   버전 두개있음 이거 docker에서 제공하는걸로 다운받으셈
+
+    ```bash
+    # docker repository 접근을 위한 gpg 키 설정
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    
+    # docker repository 등록
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+    
+    # 업데이트
+    sudo apt update
+    
+    # docker 설치
+    sudo apt install docker-ce
+    ```
+
+3. 스왑 메모리 사용할 수 있도록 하기
+
+   https://repost.aws/ko/knowledge-center/ec2-memory-swap-file
+
+   https://ssue-dev.tistory.com/2
+
+    ```bash
+    df -h #하드디스크 용량
+    
+    # 2G의 의미는 2G만큼을 swapfile로 생성하게 되어집니다.
+    # 따라서 {N}G와 같이, N에 본인이 생성할 스왑메모리를 할당합니다.
+    sudo fallocate -l 2G /swapfile
+    
+    chmod 600 /swapfile # swap 파일 권한 수정
+    
+    # 생성된 swapfile을 이용하여 swap memory 활성화
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    
+    # 시스템이 재부팅 되어도 swap이 적용되도록 설정
+    sudo echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+    
+    # Swap 메모리 활용 수준 확인 (기본값 60)
+    sysctl vm.swappiness
+    
+    # 디렉토리와 inode 오브젝트에 대한 캐시로 사용된 메모리를 반환하는 경향의 정도 (기본값 100)
+    sysctl vm.vfs_cache_pressure
+    ```
+
+4. sudo docker login -u [username] → password
+
+### 내 프로젝트
+
+1. build
+2. 도커 이미지 생성 : docker build - -platform linux/amd64 -t dingdong20/instagram .
+3. 도커 허브에 푸시 : docker push dingdong20/instagram
+
+### cloudshell
+
+1. 이미지 풀 받기 : sudo docker pull dingdong20/instagram
+2. sudo docker pull mysql
+3. mysql 컨테이너 생성 및 실행 : sudo docker run -e MYSQL_ROOT_PASSWORD=password -d -p 3306:3306 mysql
+4. .env파일을 별도로 만들어둠 (vi .env)
+5. instagram 컨테이너 생성 및 실행 : sudo docker run -e .env -d -p 80:8080 dingdong20/instagram
+6. 그럼 퍼블릭 아이피에 서버 올라간거 확인할 수 있음
+
+### 서버 내리는 방법
+
+ec2 인스턴스 중지를 하면 컴퓨터 전체를 끝낸다고 생각하면됨 (근데 중지해도 ip 할당은 받은 상태라서 돈은 나감)
+
+서버 내릴때는 sudo docker rm -f instagram 으로 컨테이너를 제거!!
+
+## Trouble Shooting
+
+### instagram container 실행이 안되는 문제 발생
+
+1. `.env` 환경 변수 수정 - rds에서 설정한대로
+    - DB_URL=[database-2.cjqwug44qqcy.ap-northeast-2.rds.amazonaws.com:3306/instagramDB](http://database-2.cjqwug44qqcy.ap-northeast-2.rds.amazonaws.com:3306/instagramDB)
+        - [database 엔드포인트]/[db 이름]
+    - DB_USERNAME : admin
+    - DB_PASSWORD : password
+2. ec2 방화벽 규칙 업데이트
+
+    ```bash
+    sudo ufw status # ufw 방화벽 규칙 확인
+    
+    # 결과 : "Status: inactive"
+    ```
+
+    ```bash
+    sudo ufw allow 80 # HTTP(80) 트래픽 허용
+    
+    # 결과 : "Rules updated"
+    ```
+
+3. log 확인 → MYSQL_ROOT_PASSWORD 설정해야한다고 .. 왤까 ….
+
+    ```bash
+    sudo docker run -e MYSQL_ROOT_PASSWORD=1234 -e .env -d -p 80:8080 dingdong20/instagram
+    ```
+
+
+### container 실행까지는 성공했는데, 서버가 안뜨는 문제
+<img width="1497" alt="image" src="https://github.com/user-attachments/assets/642ed04e-d892-43c1-9174-8ba98050ad95">
+
+![image](https://github.com/user-attachments/assets/fcb34f81-ca96-41b8-bd29-73cd930a1d61)

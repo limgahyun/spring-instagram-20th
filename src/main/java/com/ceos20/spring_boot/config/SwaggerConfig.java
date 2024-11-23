@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
                 description = "Instagram clone coding API 명세서",
                 version = "v1"
         ),
-        servers = {@Server(url = "http://localhost:8080", description = "local server")}
+        servers = {@Server(url = "http://3.36.95.38:80", description = "local server")}
 )
 public class SwaggerConfig {
 
